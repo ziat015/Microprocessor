@@ -7,34 +7,34 @@ B DB 'input number is odd $'
 
 .CODE
 MAIN PROC
-    MOV AX,@DATA    ; Initialize data segment
+    MOV AX,@DATA    
     MOV DS,AX
 
-    MOV AH,1        ; Read character input
-    INT 21H         ; Get number from user
+    MOV AH,1        
+    INT 21H         
 
-    AND AL,0001H    ; Mask with 0001H to check least significant bit
-                    ; If number is even, least significant bit will be 0
-                    ; If number is odd, least significant bit will be 1
+    AND AL,0001H    
+                    
+                    
 
-    CMP AL,0H       ; Compare result with 0
-    JE EVEN         ; Jump to EVEN if equal (AL = 0)
-    JNE ODD         ; Jump to ODD if not equal (AL = 1)
+    CMP AL,0H       
+    JE EVEN         
+    JNE ODD         
 
 EVEN:
-    MOV AH,9        ; Print string function
-    LEA DX,A        ; Load "input number is even" message
-    INT 21H         ; Display message
-    JMP EXIT        ; Jump to exit
+    MOV AH,9        
+    LEA DX,A        
+    INT 21H         
+    JMP EXIT        
 
 ODD:
-    MOV AH,9        ; Print string function
-    LEA DX,B        ; Load "input number is odd" message
-    INT 21H         ; Display message
-    JMP EXIT        ; Jump to exit
+    MOV AH,9        
+    LEA DX,B       
+    INT 21H         
+    JMP EXIT       
 
 EXIT:
-    MOV AH,4CH      ; Terminate program
+    MOV AH,4CH      
     INT 21H
 
 MAIN ENDP
