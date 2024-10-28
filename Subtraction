@@ -7,48 +7,48 @@ C DB "Result: $"
 
 .CODE
 MAIN PROC
-    MOV AX,@DATA         ; Setup data segment
+    MOV AX,@DATA        
     MOV DS,AX
 
-    MOV AH,9            ; Print first prompt
+    MOV AH,9            
     LEA DX,A            
     INT 21H
 
-    MOV AH,1            ; Get first input
+    MOV AH,1            
     INT 21H
     MOV BL,AL
 
-    MOV AH,2            ; Print newline
+    MOV AH,2           
     MOV DL,10
     INT 21H
-    MOV DL,13           ; Print carriage return
+    MOV DL,13           
     INT 21H
 
-    MOV AH,9            ; Print second prompt
+    MOV AH,9            
     LEA DX,B
     INT 21H
 
-    MOV AH,1            ; Get second input
+    MOV AH,1            
     INT 21H
     MOV BH,AL
 
-    MOV AH,2            ; Print newline
+    MOV AH,2           
     MOV DL,10
     INT 21H
-    MOV DL,13           ; Print carriage return
+    MOV DL,13           
     INT 21H
 
-    MOV AH,9            ; Print result prompt
+    MOV AH,9           
     LEA DX,C
     INT 21H
 
-    SUB BL,BH           ; Subtract the numbers (this is different from the previous version)
-    ADD BL,48           ; Convert to ASCII
+    SUB BL,BH           
+    ADD BL,48           
     MOV DL,BL
     MOV AH,2
     INT 21H
 
-    MOV AH,4CH          ; End program
+    MOV AH,4CH          
     INT 21H
 
 MAIN ENDP
