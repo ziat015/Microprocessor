@@ -1,0 +1,113 @@
+#include <stdio.h>
+#define TOTAL_PROCESSES 5
+
+int completionTimes[TOTAL_PROCESSES];
+int turnaroundTimes[TOTAL_PROCESSES];
+int waitingTimes[TOTAL_PROCESSES];
+int processOrder[TOTAL_PROCESSES];
+
+void sortProcesses(int arrivalTimes[], int burstTimes[]) {
+    for (int i = 0; i < TOTAL_PROCESSES - 1; i++) {
+        int minIndex = i;
+        for (int j = i + 1; j < TOTAL_PROCESSES; j++) {
+            if (arrivalTimes[j] < arrivalTimes[minIndex] || 
+                (arrivalTimes[j] == arrivalTimes[minIndex] && burstTimes[j] < burstTimes[minIndex])) {
+                minIndex = j;
+            }
+        }
+        int tempArrival = arrivalTimes[i];
+        arrivalTimes[i] = arrivalTimes[minIndex];
+        arrivalTimes[minIndex] = tempArrival;
+
+        int tempBurst = burstTimes[i];
+        burstTimes[i] = burstTimes[minIndex];
+        burstTimes[minIndex] = tempBurst;
+
+        int tempIndex = processOrder[i];
+        processOrder[i] = processOrder[minIndex];
+        processOrder[minIndex] = tempIndex;
+    }
+}
+
+void calculateCompletionTimes(int burstTimes[], int arrivalTimes[]) {
+    int currentTime = arrivalTimes[0];
+    for (int i = 0; i < TOTAL_PROCESSES; i++) {
+        if (currentTime < arrivalTimes[i]) {
+            currentTime = arrivalTimes[i];
+        }
+        currentTime += burstTimes[i];
+        completionTimes[i] = currentTime;
+    }
+}
+
+void calculateTurnaroundTimes(int arrivalTimes[]) {
+    for (int i = 0; i < TOTAL_PROCESSES; i++) {
+        turnaroundTimes[i] = completionTimes[i] - arrivalTimes[i];
+    }
+}
+
+void calculateWaitingTimes(int burstTimes[]) {
+    for (int i = 0; i < TOTAL_PROCESSES; i++) {
+        waitingTimes[i] = turnaroundTimes[i] - burstTimes[i];
+    }
+}
+
+void printAverageWaitingTime() {
+    int totalWaitingTime = 0;
+    for (int i = 0; i < TOTAL_PROCESSES; i++) {
+        totalWaitingTime += waitingTimes[i];
+    }
+    float averageWaitingTime = (float)totalWaitingTime / TOTAL_PROCESSES;
+    printf("\nAverage Waiting Time: %.2f", averageWaitingTime);
+}
+
+void printAverageTurnaroundTime() {
+    int totalTurnaroundTime = 0;
+    for (int i = 0; i < TOTAL_PROCESSES; i++) {
+        totalTurnaroundTime += turnaroundTimes[i];
+    }
+    float averageTurnaroundTime = (float)totalTurnaroundTime / TOTAL_PROCESSES;
+    printf("\nAverage Turnaround Time: %.2f\n", averageTurnaroundTime);
+}
+
+void displayResults() {
+    printf("\nProcess\tCompletion Time\tTurnaround Time\tWaiting Time");
+    for (int i = 0; i < TOTAL_PROCESSES; i++) {
+        for (int j = 0; j < TOTAL_PROCESSES; j++) {
+            if (processOrder[j] == i) {
+                printf("\nP%d\t\t%d\t\t%d\t\t%d", i + 1, completionTimes[j], turnaroundTimes[j], waitingTimes[j]);
+            }
+        }
+    }
+}
+
+int main() {
+    int burstTimes[TOTAL_PROCESSES];
+    int arrivalTimes[TOTAL_PROCESSES];
+
+    printf("Enter Arrival Times for %d Processes:\n", TOTAL_PROCESSES);
+    for (int i = 0; i < TOTAL_PROCESSES; i++) {
+        printf("Arrival Time for Process %d: ", i + 1);
+        scanf("%d", &arrivalTimes[i]);
+        processOrder[i] = i;
+    }
+
+    printf("Enter Burst Times for %d Processes:\n", TOTAL_PROCESSES);
+    for (int i = 0; i < TOTAL_PROCESSES; i++) {
+        printf("Burst Time for Process %d: ", i + 1);
+        scanf("%d", &burstTimes[i]);
+    }
+
+    sortProcesses(arrivalTimes, burstTimes);
+
+    calculateCompletionTimes(burstTimes, arrivalTimes);
+    calculateTurnaroundTimes(arrivalTimes);
+    calculateWaitingTimes(burstTimes);
+
+    displayResults();
+
+    printAverageWaitingTime();
+    printAverageTurnaroundTime();
+
+    return 0;
+}
